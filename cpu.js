@@ -48,8 +48,8 @@ function CPU(memamt) {
 
 	// TODO: visualize general purpose registers
 	setInterval(() => {
-		console.log(this.gen_reg.map(l => l.toString()))
-	}, 1000)
+		postMessage({ type: 'telemetry-genreg', payload: this.gen_reg })
+	}, 10)
 
 	// privileged control registers
 	this.priv_reg = new Array(3075)
@@ -67,12 +67,12 @@ function CPU(memamt) {
 
 	// TODO: visualize priviledged register output
 	setInterval(() => {
-		console.log(this.priv_reg.map(l => l.toString()))
+		postMessage({ type: 'telemetry-privreg', payload: this.priv_reg })
 	}, 1000)
 
 	// TODO: visualize memory
 	setInterval(() => {
-		console.log(this.memory)
+		postMessage({ type: 'telemetry-memory', payload: this.memory })
 	}, 1000)
 
 	// init status register

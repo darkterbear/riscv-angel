@@ -34,8 +34,21 @@
 			}
 
 			.container {
-				margin: 0 auto;
-				width: 1180px;
+				margin: 0;
+				margin-left: 1em;
+				width: 1024px;
+				float: left;
+			}
+
+			.sideContainer {
+				width: calc(100% - 1024px - 2em);
+				margin-left: 1em;
+				float: left;
+			}
+
+			#registers {
+				width: 100%;
+				height: 200px;
 			}
 
 			.consBoxNoGlow:focus {
@@ -56,6 +69,7 @@
 				$('#bootButton').prop('onclick', null)
 				myWorker = new Worker('webworker.js')
 				myWorker.onmessage = function(oEvent) {
+					// console.log(oEvent)
 					if (oEvent.data.type == 't') {
 						// handle term event
 						//            write_to_term(oEvent.data.d);
@@ -75,6 +89,8 @@
 						$('#mipsLabel').show()
 						$('#mipsCount').show()
 						document.getElementById('mipsCount').innerHTML = oEvent.data.d
+					} else if (oEvent.data.type == 'telemetry-genreg') {
+						updateRegisters(oEvent.data.payload)
 					}
 				}
 			}
@@ -510,6 +526,10 @@
 				</div>
 			</div>
 		</div>
+		<div class="sideContainer">
+			<h3>Registers</h3>
+			<div id="registers"></div>
+		</div>
 	</body>
 
 	<!-- misc end-of-page scripts -->
@@ -609,4 +629,9 @@
 	</script>
 	<!-- set up shepherd helper for the user-->
 	<script src="ui/shepherdconfig.js"></script>
+
+	<!-- d3 visualization scripts -->
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="/lib/closure-compiled/long.js"></script>
+	<script src="registers.js"></script>
 </html>
