@@ -73,7 +73,7 @@ function CPU(memamt) {
 	// TODO: visualize memory
 	setInterval(() => {
 		postMessage({ type: 'telemetry-memory', payload: this.memory })
-	}, 1000)
+	}, 10)
 
 	// init status register
 	this.priv_reg[PCR['CSR_STATUS']['num']] = status_reg_init()

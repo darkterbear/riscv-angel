@@ -13,7 +13,7 @@ let rows = 8
 let columns = 4
 
 if (rows * columns !== 32) {
-	console.error('')
+	console.error("Columns and rows don't multiply to 32")
 }
 
 let regW = (registersW - spacing * columns) / columns
@@ -65,7 +65,6 @@ let updateRegisters = registers => {
 		let textSelector = `[id="x${i}-text"]`
 		let rectSelector = `[id="x${i}-rect"]`
 
-		console.log(newText, d3.select(textSelector).text)
 		if (newText != d3.select(textSelector).text()) {
 			// set new text
 			d3.select(textSelector).text(() => newText)
