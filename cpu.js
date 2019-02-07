@@ -46,7 +46,6 @@ function CPU(memamt) {
 		this.gen_reg[i] = new Long(0x0, 0x0)
 	}
 
-	// TODO: visualize general purpose registers
 	setInterval(() => {
 		postMessage({ type: 'telemetry-genreg', payload: this.gen_reg })
 	}, 10)
@@ -70,7 +69,6 @@ function CPU(memamt) {
 		postMessage({ type: 'telemetry-privreg', payload: this.priv_reg })
 	}, 1000)
 
-	// TODO: visualize memory
 	setInterval(() => {
 		postMessage({ type: 'telemetry-memory', payload: this.memory })
 	}, 10)
