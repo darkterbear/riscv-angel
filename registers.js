@@ -9,8 +9,8 @@ let registersSVG = d3
 
 let spacing = 16
 let strokeWidth = 4
-let rows = 4
-let columns = 8
+let rows = 8
+let columns = 4
 
 if (rows * columns !== 32) {
 	console.error('')
@@ -53,10 +53,29 @@ for (let row = 0; row < rows; row++) {
 	}
 }
 
+const twoP64 = 2 ** 64
+
 let updateRegisters = registers => {
 	registers.forEach((r, i) => {
-		let long = new goog.math.Long(r.high_, r.low_)
-		console.log(long.toString(32))
-		d3.select(`[id="x${i}-text"]`).text(() => long.toString())
+		r.high_ = (r.high_ + twoP64) % twoP64
+		r.low_ = (r.low_ + twoP64) % twoP64
+
+		let long = new goog.math.Long(r.low_, r.high_)
+		let newText = long.toString(16)
+		let textSelector = `[id="x${i}-text"]`
+		let rectSelector = `[id="x${i}-rect"]`
+
+		console.log(newText, d3.select(textSelector).text)
+		if (newText != d3.select(textSelector).text()) {
+			// set new text
+			d3.select(textSelector).text(() => newText)
+
+			// transition
+			d3.select(rectSelector).attr('stroke', 'blue')
+			d3.select(rectSelector)
+				.transition()
+				.attr('stroke', 'black')
+				.duration(500)
+		}
 	})
 }
