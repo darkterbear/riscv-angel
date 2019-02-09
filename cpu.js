@@ -66,7 +66,7 @@ function CPU(memamt) {
 
 	setInterval(() => {
 		postMessage({ type: 'telemetry-privreg', payload: this.priv_reg })
-	}, 1000)
+	}, 100)
 
 	setInterval(() => {
 		postMessage({ type: 'telemetry-memory', payload: this.memory })

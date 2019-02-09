@@ -60,7 +60,6 @@ for (let row = 0; row < rows; row++) {
 }
 
 let updateCSR = csr => {
-	console.log(csr)
 	if (csrRangeStart >= csr.length - 32) {
 		return
 	}
