@@ -53,10 +53,43 @@ for (let row = 0; row < rows; row++) {
 			.attr('y', row * (mcsrH + spacing) + strokeWidth + mcsrH / 2 + 6)
 			.attr('font-size', 18)
 			.attr('text-anchor', 'middle')
-			.text(() => 0)
+			.text(() => 'empty')
 		// .attr('rx', spacing / 2)
 		// .attr('ry', spacing / 2)
 	}
+}
+
+let invPCR = {
+	0x001: 'FFLAGS',
+	0x002: 'FRM',
+	0x003: 'FCSR',
+
+	0x500: 'SUP0',
+	0x501: 'SUP1',
+	0x502: 'EPC',
+	0x503: 'BADVADDR',
+	0x504: 'PTBR',
+	0x505: 'ASID',
+	0x506: 'COUNT',
+	0x507: 'COMPARE',
+	0x508: 'EVEC',
+	0x509: 'CAUSE',
+	0x50a: 'STATUS',
+	0x50b: 'HARTID',
+	0x50c: 'IMPL',
+	0x50d: 'FATC',
+	0x50e: 'SEND_IPI',
+	0x50f: 'CLEAR_IPI',
+
+	0x51c: 'STATS',
+	0x51d: 'RESET',
+
+	0x51e: 'TOHOST',
+	0x51f: 'FROMHOST',
+
+	0xc00: 'CYCLE',
+	0xc01: 'TIME',
+	0xc02: 'INSTRET'
 }
 
 let updateCSR = csr => {
@@ -74,6 +107,10 @@ let updateCSR = csr => {
 			let long = new goog.math.Long(csr[i].low_, csr[i].high_)
 
 			newText = long.toString(16)
+
+			if (invPCR[i]) {
+				newText = invPCR[i] + ': ' + newText
+			}
 		}
 
 		let textSelector = `[id="csr${i - csrRangeStart}-text"]`
