@@ -1,12 +1,3 @@
-// handle the range start text input
-let csrRangeStartInput = document.getElementById('csrRangeStartInput')
-csrRangeStartInput.addEventListener('keypress', e => {
-	if (e.keyCode == 13) {
-		csrRangeStart = Number(csrRangeStartInput.value)
-		csrRangeStartInput.blur()
-	}
-})
-
 let csrH = document.getElementById('memory').clientHeight
 let csrW = document.getElementById('memory').clientWidth
 
@@ -22,8 +13,6 @@ if (rows * columns !== 32) {
 
 let mcsrW = (csrW - spacing * columns) / columns
 let mcsrH = (csrH - spacing * rows) / rows
-
-let csrRangeStart = 0x0000
 
 // initialize the 32 memory pages in range
 for (let row = 0; row < rows; row++) {
@@ -53,7 +42,7 @@ for (let row = 0; row < rows; row++) {
 			.attr('y', row * (mcsrH + spacing) + strokeWidth + mcsrH / 2 + 6)
 			.attr('font-size', 18)
 			.attr('text-anchor', 'middle')
-			.text(() => 'empty')
+			.text(() => '')
 		// .attr('rx', spacing / 2)
 		// .attr('ry', spacing / 2)
 	}
@@ -63,7 +52,6 @@ let invPCR = {
 	0x001: 'FFLAGS',
 	0x002: 'FRM',
 	0x003: 'FCSR',
-
 	0x500: 'SUP0',
 	0x501: 'SUP1',
 	0x502: 'EPC',
@@ -80,41 +68,38 @@ let invPCR = {
 	0x50d: 'FATC',
 	0x50e: 'SEND_IPI',
 	0x50f: 'CLEAR_IPI',
-
 	0x51c: 'STATS',
 	0x51d: 'RESET',
-
 	0x51e: 'TOHOST',
 	0x51f: 'FROMHOST',
-
 	0xc00: 'CYCLE',
 	0xc01: 'TIME',
 	0xc02: 'INSTRET'
 }
 
-let updateCSR = csr => {
-	if (csrRangeStart >= csr.length - 32) {
-		return
-	}
+let PCRs = []
 
-	for (let i = csrRangeStart; i < csrRangeStart + 32; i++) {
+for (num in invPCR) {
+	PCRs.push({ num, name: invPCR[num] })
+}
+
+let updateCSR = csr => {
+	for (let i = 0; i < 32; i++) {
 		let newText
-		if (csr[i] === undefined || csr[i] === null) {
-			newText = 'empty'
+		if (i >= PCRs.length) {
+			newText = ''
 		} else {
-			csr[i].high_ = (csr[i].high_ + twoP64) % twoP64
-			csr[i].low_ = (csr[i].low_ + twoP64) % twoP64
-			let long = new goog.math.Long(csr[i].low_, csr[i].high_)
+			let val = csr[PCRs[i].num]
+			val.high_ = (val.high_ + twoP64) % twoP64
+			val.low_ = (val.low_ + twoP64) % twoP64
+			let long = new goog.math.Long(val.low_, val.high_)
 
 			newText = long.toString(16)
-
-			if (invPCR[i]) {
-				newText = invPCR[i] + ': ' + newText
-			}
+			newText = PCRs[i].name + ': ' + newText
 		}
 
-		let textSelector = `[id="csr${i - csrRangeStart}-text"]`
-		let rectSelector = `[id="csr${i - csrRangeStart}-rect"]`
+		let textSelector = `[id="csr${i}-text"]`
+		let rectSelector = `[id="csr${i}-rect"]`
 
 		if (newText != d3.select(textSelector).text()) {
 			// set new text
