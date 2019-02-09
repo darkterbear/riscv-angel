@@ -1,9 +1,9 @@
 // handle the range start text input
-let rangeStartInput = document.getElementById('rangeStartInput')
-rangeStartInput.addEventListener('keypress', e => {
+let memRangeStartInput = document.getElementById('memRangeStartInput')
+memRangeStartInput.addEventListener('keypress', e => {
 	if (e.keyCode == 13) {
-		rangeStart = Number(rangeStartInput.value)
-		rangeStartInput.blur()
+		memRangeStart = Number(memRangeStartInput.value)
+		memRangeStartInput.blur()
 	}
 })
 
@@ -23,7 +23,7 @@ if (rows * columns !== 32) {
 let memW = (memoryW - spacing * columns) / columns
 let memH = (memoryH - spacing * rows) / rows
 
-let rangeStart = 0x0000
+let memRangeStart = 0x0000
 
 // initialize the 32 memory pages in range
 for (let row = 0; row < rows; row++) {
@@ -60,16 +60,15 @@ for (let row = 0; row < rows; row++) {
 }
 
 let updateMemory = memory => {
-	if (rangeStart >= memory.length - 32) {
+	if (memRangeStart >= memory.length - 32) {
 		return
 	}
 
-	for (let i = rangeStart; i < rangeStart + 0x20; i++) {
+	for (let i = memRangeStart; i < memRangeStart + 0x20; i++) {
 		let newText = '0x' + memory[i].toString(16)
-		console.log(newText)
 
-		let textSelector = `[id="mem${i - rangeStart}-text"]`
-		let rectSelector = `[id="mem${i - rangeStart}-rect"]`
+		let textSelector = `[id="mem${i - memRangeStart}-text"]`
+		let rectSelector = `[id="mem${i - memRangeStart}-rect"]`
 
 		if (newText != d3.select(textSelector).text()) {
 			// set new text

@@ -48,7 +48,7 @@ function CPU(memamt) {
 
 	setInterval(() => {
 		postMessage({ type: 'telemetry-genreg', payload: this.gen_reg })
-	}, 10)
+	}, 100)
 
 	// privileged control registers
 	this.priv_reg = new Array(3075)
@@ -64,14 +64,13 @@ function CPU(memamt) {
 		}
 	}
 
-	// TODO: visualize priviledged register output
 	setInterval(() => {
 		postMessage({ type: 'telemetry-privreg', payload: this.priv_reg })
 	}, 1000)
 
 	setInterval(() => {
 		postMessage({ type: 'telemetry-memory', payload: this.memory })
-	}, 10)
+	}, 100)
 
 	// init status register
 	this.priv_reg[PCR['CSR_STATUS']['num']] = status_reg_init()

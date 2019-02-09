@@ -57,6 +57,16 @@
 				height: 40%;
 			}
 
+			#csr {
+				width: 100%;
+				height: 40%;
+			}
+
+			#pt {
+				width: 100%;
+				height: 40%;
+			}
+
 			.consBoxNoGlow:focus {
 				outline: none;
 				border: none;
@@ -64,6 +74,24 @@
 
 			.tooltip-inner {
 				max-width: 500px;
+			}
+
+			button {
+				font-weight: bold;
+				background: white;
+				border-radius: 1em;
+				height: 3em;
+				padding: 0 1em 0 1em;
+			}
+
+			button.highlight {
+				color: white;
+				background: #527aff;
+				border-color: #345fec;
+			}
+
+			.hidden {
+				display: none;
 			}
 		</style>
 
@@ -99,8 +127,33 @@
 						updateRegisters(oEvent.data.payload)
 					} else if (oEvent.data.type == 'telemetry-memory') {
 						updateMemory(oEvent.data.payload)
+					} else if (oEvent.data.type == 'telemetry-privreg') {
+						updateCSR(oEvent.data.payload)
 					}
 				}
+			}
+
+			function showCSRPT() {
+				let gpMemButton = document.getElementById('gpMemButton')
+				let csrPTButton = document.getElementById('csrPTButton')
+				csrPTButton.classList.add('highlight')
+				gpMemButton.classList.remove('highlight')
+
+				let csrPTContainer = document.getElementById('csrPTContainer')
+				let gpRegContainer = document.getElementById('gpRegContainer')
+
+				csrPTContainer.classList.remove('hidden')
+				gpRegContainer.classList.add('hidden')
+			}
+
+			function showGPMem() {
+				let gpMemButton = document.getElementById('gpMemButton')
+				let csrPTButton = document.getElementById('csrPTButton')
+				gpMemButton.classList.add('highlight')
+				csrPTButton.classList.remove('highlight')
+
+				csrPTContainer.classList.add('hidden')
+				gpRegContainer.classList.remove('hidden')
 			}
 		</script>
 	</head>
@@ -170,7 +223,7 @@
 									id="consoleBox"
 									tabindex="1"
 									class="consBoxNoGlow"
-									style="padding:5px; height:700px; background-color:black; overflow: hidden; color:white; font-size:110%; font-family: Monaco, Consolas, Lucida Console, monospace;"
+									style="padding:5px; height:600px; background-color:black; overflow: hidden; color:white; font-size:110%; font-family: Monaco, Consolas, Lucida Console, monospace;"
 								></div>
 							</div>
 							<div class="tab-pane" id="tab2">
@@ -535,19 +588,53 @@
 			</div>
 		</div>
 		<div class="sideContainer">
-			<h3>Registers</h3>
-			<div id="registers"></div>
-			<div
-				style="display: flex; flex-direction: row; justify-content: start; align-items: center;"
-			>
-				<h3>Memory</h3>
-				<input
-					id="rangeStartInput"
-					style="margin-left: 1em; height: 3em; padding-left: 1em; border-radius: 1em; font-weight: bold;"
-					placeholder="Range Start (0x...)"
-				/>
+			<button onclick="showGPMem()" id="gpMemButton" class="highlight">
+				GP Registers and Memory
+			</button>
+			<button onclick="showCSRPT()" id="csrPTButton">
+				CSRs and Page Table
+			</button>
+
+			<div id="gpRegContainer">
+				<h3>Registers</h3>
+				<div id="registers"></div>
+				<div
+					style="display: flex; flex-direction: row; justify-content: start; align-items: center;"
+				>
+					<h3>Memory</h3>
+					<input
+						id="memRangeStartInput"
+						style="margin-left: 1em; height: 3em; padding-left: 1em; border-radius: 1em; font-weight: bold;"
+						placeholder="Range Start (0x...)"
+					/>
+				</div>
+				<div id="memory"></div>
 			</div>
-			<div id="memory"></div>
+			<div id="csrPTContainer" class="hidden">
+				<div
+					style="display: flex; flex-direction: row; justify-content: start; align-items: center;"
+				>
+					<h3>CSRs</h3>
+					<input
+						id="csrRangeStartInput"
+						style="margin-left: 1em; height: 3em; padding-left: 1em; border-radius: 1em; font-weight: bold;"
+						placeholder="Range Start"
+					/>
+				</div>
+				<div id="csr"></div>
+
+				<div
+					style="display: flex; flex-direction: row; justify-content: start; align-items: center;"
+				>
+					<h3>Page Table</h3>
+					<input
+						id="ptRangeStartInput"
+						style="margin-left: 1em; height: 3em; padding-left: 1em; border-radius: 1em; font-weight: bold;"
+						placeholder="Range Start"
+					/>
+				</div>
+				<div id="pt"></div>
+			</div>
 		</div>
 	</body>
 
@@ -654,4 +741,5 @@
 	<script src="/lib/closure-compiled/long.js"></script>
 	<script src="registers.js"></script>
 	<script src="memory.js"></script>
+	<script src="csr.js"></script>
 </html>
